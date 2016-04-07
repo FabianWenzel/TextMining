@@ -6,6 +6,9 @@
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class ReadFile {
 
@@ -43,6 +46,20 @@ public class ReadFile {
         int numberOfLines = 0;
 
         while((aLine = bf.readLine()) != null){
+
+           // String line = "This order was placed for QT3000! OK?";
+            String pattern = "^<([^/>a-z]+)>";
+
+            // Create a Pattern object
+            Pattern r = Pattern.compile(pattern);
+
+            // Now create matcher object.
+            Matcher m = r.matcher(aLine);
+            if (m.find( )) {
+                System.out.println("Found value: " + m.group(0) );
+            } else {
+                System.out.println("NO MATCH");
+            }
             numberOfLines++;
         }
         bf.close();
