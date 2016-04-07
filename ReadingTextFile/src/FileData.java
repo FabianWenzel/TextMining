@@ -9,7 +9,8 @@ import java.io.IOException;
 public class FileData {
     public static void main(String[] args) throws IOException {
 
-        String file_name = "C:/test.txt";
+        String file_name = "C:/Users/student/Documents/TXT/historical/The First Part of King Henry IV_characters/QUICKLY.txt";
+
 
         try {
             ReadFile file = new ReadFile(file_name);
