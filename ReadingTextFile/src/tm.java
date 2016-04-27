@@ -1,19 +1,42 @@
-public class tm3 {
+public class tm {
 
     public static void main(String[] args) {
         ShakespeareParser sp = new ShakespeareParser();
-        Work work = null;
+        AllWorks works = null;
+        NLPWrapper nlp = new NLPWrapper();
+        VectorSpace vs = new VectorSpace();
+
         if (args.length==0) {
-            work = sp.readFile("C:\\Users\\kai\\Downloads\\ShakespearePlaysPlus\\TXT\\historical\\The Tragedy of King Richard II.txt");
+            works = sp.readFiles("C:\\Users\\fabian\\Documents\\6 Semester\\TXT");
         } else {
-            work = sp.readFile(args[0]);
+            works = sp.readFiles(args[0]);
         }
 
-        for (String name: work.getSpeakers()) {
-            System.out.println(name + ": " + work.getNumberOfMonologuesBySpeaker(name) + " times, " + work.getWordsBySpeaker(name) + " words, " + work.getWordsBySpeaker(name)/work.getNumberOfMonologuesBySpeaker(name) + " words per monologue.");
+        // Vector Space erzeugen
+        for (Speaker speaker: works.getAllSpeakers()) {
+            vs.addDocument(speaker.toString(), nlp.tokenize(speaker.getAllText()));
         }
 
+        for (Speaker speaker: works.getAllSpeakers()) {
+            System.out.print(speaker + " ----> ");
+            double maxSim = 0;
+            Speaker maxSpeaker = null;
+            for (Speaker s2: works.getAllSpeakers()) {
+                // Kein Vergleich mit sich selbst!
+                if (speaker.equals(s2)) continue;
+                double sim = vs.getCosineSimilarity(speaker.toString(), s2.toString());
+                if (sim>maxSim) {
+                    maxSim = sim;
+                    maxSpeaker = s2;
+                }
+            }
+            System.out.println("Most similar: " + maxSpeaker + " ("+maxSim+")");
+            System.out.println("-------------------------------");
+        }
 
     }
+
+
+
 
 }
