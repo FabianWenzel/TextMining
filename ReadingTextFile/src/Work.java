@@ -1,53 +1,83 @@
+/**
+ * Created by fuexle on 27.04.2016.
+ */
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author kai
  */
 public class Work {
-    private List<Monolog> monologues = new ArrayList<>();
-    private Map<String, List<Monolog>> bySpeaker = new HashMap<>();
+    private List<Monologue> monologues = new ArrayList<>();
+    private List<Speaker> speakers = new ArrayList<>();
+    private String filename;
+    private AllWorks allWorks;
 
-    public Work() {
+    public Work(AllWorks allWorks) {
+        this.allWorks = allWorks;
+        allWorks.add(this);
     }
 
-    public List<String> getSpeakers() {
-        List<String> res = new ArrayList<>();
-        for (String name: bySpeaker.keySet()) {
-            res.add(name);
-        }
-        Collections.sort(res, new Comparator<String>(){
-            @Override
-            public int compare(String name1, String name2) {
-                return bySpeaker.get(name2).size() - bySpeaker.get(name1).size();
+    public AllWorks getAllWorks() {
+        return allWorks;
+    }
+
+
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+
+
+
+
+    public void sortSpeakersByMonologues() {
+        Collections.sort(speakers,
+                (speaker1, speaker2) -> speaker1.getNumberOfMonologues() - speaker2.getNumberOfMonologues()
+        );
+    }
+
+    public List<Speaker> getSpeakers() {
+        return speakers;
+    }
+
+    public Speaker getOrCreateSpeaker(String name) {
+        for (Speaker s: speakers) {
+            if (s.getName().toLowerCase().equals(name.toLowerCase())) {
+                return s;
             }
-        });
-        return res;
-    }
-
-    public void add(Monolog m) {
-        monologues.add(m);
-        if (bySpeaker.get(m.getSpeaker())==null) {
-            bySpeaker.put(m.getSpeaker(), new ArrayList<Monolog>());
         }
-        bySpeaker.get(m.getSpeaker()).add(m);
+        return new Speaker(name, this);
     }
 
-    public int getWordsBySpeaker(String name) {
-        int sum = 0;
-        for (Monolog m: bySpeaker.get(name)) {
-            sum += m.getText().split(" ").length;
+
+    public List<Monologue> getMonologues() {
+        return monologues;
+    }
+
+
+
+
+    public String getAllText() {
+        StringBuilder res = new StringBuilder();
+        for (Monologue m: monologues) {
+            res.append(m.getText()).append(" ");
         }
-        return sum;
+        return res.toString();
     }
 
-    public int getNumberOfMonologuesBySpeaker(String name) {
-        return bySpeaker.get(name).size();
+    @Override
+    public String toString() {
+        return filename;
     }
+
+
 
 }
